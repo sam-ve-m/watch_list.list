@@ -1,0 +1,55 @@
+include:
+- ./func/*
+kind: ArchiveUploadSpec
+name: func-32No
+
+---
+apiVersion: fission.io/v1
+kind: Package
+metadata:
+  creationTimestamp: null
+  name: wathc-list-list-fn-8088b5d7-57b3-4a4f-9f2e-e62d10408526
+  namespace: default
+spec:
+  deployment:
+    checksum: {}
+  environment:
+    name: wathc-list-list-env
+    namespace: default
+  source:
+    checksum: {}
+    type: url
+    url: archive://func-32No
+status:
+  buildstatus: pending
+  lastUpdateTimestamp: "2022-05-31T16:05:29Z"
+
+---
+apiVersion: fission.io/v1
+kind: Function
+metadata:
+  creationTimestamp: null
+  name: wathc-list-list-fn
+  namespace: default
+spec:
+  InvokeStrategy:
+    ExecutionStrategy:
+      ExecutorType: poolmgr
+      MaxScale: 0
+      MinScale: 0
+      SpecializationTimeout: 120
+      TargetCPUPercent: 0
+    StrategyType: execution
+  concurrency: 500
+  environment:
+    name: wathc-list-list-env
+    namespace: default
+  functionTimeout: 60
+  idletimeout: 120
+  package:
+    functionName: main.save_symbols
+    packageref:
+      name: wathc-list-list-fn-8088b5d7-57b3-4a4f-9f2e-e62d10408526
+      namespace: default
+  requestsPerPod: 100000
+  resources: {}

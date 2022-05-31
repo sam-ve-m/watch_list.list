@@ -2,13 +2,13 @@ apiVersion: fission.io/v1
 kind: HTTPTrigger
 metadata:
   creationTimestamp: null
-  name: 86fb9628-b574-4db2-b62d-df7b40c55394
+  name: a1ef1a02-c950-4aed-97cc-e2c5f263f130
   namespace: default
 spec:
   createingress: false
   functionref:
     functionweights: null
-    name: wathc-list-list-fn
+    name: watch-list-list-fn
     type: name
   host: ""
   ingressconfig:
@@ -18,6 +18,6 @@ spec:
     tls: ""
   method: ""
   methods:
-  - POST
+  - GET
   prefix: ""
   relativeurl: /watch_list/list

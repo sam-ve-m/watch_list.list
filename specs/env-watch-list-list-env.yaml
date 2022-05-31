@@ -2,12 +2,12 @@ apiVersion: fission.io/v1
 kind: Environment
 metadata:
   creationTimestamp: null
-  name: wathc-list-list-env
+  name: watch-list-list-env
   namespace: default
 spec:
   builder:
     command: build
-    image: nexus.sigame.com.br/python-builder-3.8:0.0.2
+    image: nexus.sigame.com.br/fission-builder-3.8:0.0.1
   imagepullsecret: ""
   keeparchive: false
   poolsize: 3
@@ -16,7 +16,7 @@ spec:
     image: nexus.sigame.com.br/fission-async:0.1.6
     podspec:
       containers:
-      - name: wathc-list-list-env
+      - name: watch-list-list-env
         env:
         - name: ROOT_LOG_LEVEL
           value: "INFO"
@@ -56,4 +56,5 @@ spec:
           value: "jkl321pqr"
         - name: ASGI_FRAMEWORK
           value: "HYPERCORN"
+
   version: 2

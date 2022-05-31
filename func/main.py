@@ -13,7 +13,7 @@ from flask import request, Request, Response
 from etria_logger import Gladsheim
 
 
-async def save_symbols(request: Request = request) -> Response:
+async def list_symbols(request: Request = request) -> Response:
     x_thebes_answer = request.headers.get('x-thebes-answer')
 
     try:

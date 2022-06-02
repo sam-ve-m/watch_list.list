@@ -1,6 +1,5 @@
 from decouple import config
 from etria_logger import Gladsheim
-from motor.motor_asyncio import AsyncIOMotorCursor
 
 from src.infrastructures.mongo_db.infrastructure import MongoDBInfrastructure
 
@@ -17,12 +16,14 @@ class WatchListRepository:
             collection = database[config("MONGODB_WATCH_LIST_COLLECTION")]
             return collection
         except Exception as ex:
-            message = f'UserRepository::_get_collection::Error when trying to get collection'
+            message = (
+                f"UserRepository::_get_collection::Error when trying to get collection"
+            )
             Gladsheim.error(error=ex, message=message)
             raise ex
 
     @classmethod
-    async def list_watch_list_symbols(cls, watch_list_id: str) -> AsyncIOMotorCursor:
+    async def get_symbols_in_a_watch_list(cls, watch_list_id: str) -> list:
         collection = await cls.__get_collection()
         query = {"unique_id": str(watch_list_id)}
 

@@ -1,3 +1,2 @@
-
 class UnauthorizedError(Exception):
     pass

@@ -1,16 +1,14 @@
-# Jormungandr
 from src.domain.enums.response.code import InternalCode
 from src.domain.exceptions.model import UnauthorizedError
 from src.services.watch_list import WatchListService
 from src.domain.response.model import ResponseModel
 from heimdall_client.bifrost import Heimdall
 
-# Standards
 from http import HTTPStatus
 
-# Third party
 from flask import request, Request, Response
 from etria_logger import Gladsheim
+from heimdall_client.bifrost import HeimdallStatusResponses
 
 
 async def list_symbols(request: Request = request) -> Response:
@@ -20,7 +18,7 @@ async def list_symbols(request: Request = request) -> Response:
         jwt_content, heimdall_status = await Heimdall.decode_payload(
             jwt=x_thebes_answer
         )
-        if not jwt_content["is_payload_decoded"]:
+        if heimdall_status != HeimdallStatusResponses.SUCCESS:
             raise UnauthorizedError()
 
         unique_id = jwt_content["decoded_jwt"]["user"]["unique_id"]

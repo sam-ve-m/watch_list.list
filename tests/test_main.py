@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from etria_logger import Gladsheim
 from flask import Flask
+from heimdall_client import HeimdallStatusResponses
 from heimdall_client.bifrost import Heimdall
 from pytest import mark
 from werkzeug.test import Headers
@@ -27,7 +28,7 @@ decoded_jwt_invalid = {
 async def test_list_symbols_when_request_is_ok(
     decode_payload_mock, list_symbols_in_watch_list_mock
 ):
-    decode_payload_mock.return_value = (decoded_jwt_ok, "HeimdallStatus")
+    decode_payload_mock.return_value = (decoded_jwt_ok, HeimdallStatusResponses.SUCCESS)
     list_symbols_in_watch_list_mock.return_value = [
         {"symbol": "symbol", "region": "region"}
     ]
@@ -54,7 +55,10 @@ async def test_list_symbols_when_request_is_ok(
 async def test_list_symbols_when_jwt_is_invalid(
     decode_payload_mock, list_symbols_in_watch_list_mock, etria_mock
 ):
-    decode_payload_mock.return_value = (decoded_jwt_invalid, "HeimdallStatus")
+    decode_payload_mock.return_value = (
+        decoded_jwt_invalid,
+        HeimdallStatusResponses.INVALID_TOKEN,
+    )
     list_symbols_in_watch_list_mock.return_value = [
         {"symbol": "symbol", "region": "region"}
     ]
@@ -82,7 +86,7 @@ async def test_list_symbols_when_jwt_is_invalid(
 async def test_list_symbols_when_generic_exception_happens(
     decode_payload_mock, list_symbols_in_watch_list_mock, etria_mock
 ):
-    decode_payload_mock.return_value = (decoded_jwt_ok, "HeimdallStatus")
+    decode_payload_mock.return_value = (decoded_jwt_ok, HeimdallStatusResponses.SUCCESS)
     list_symbols_in_watch_list_mock.side_effect = Exception("erro")
 
     app = Flask(__name__)

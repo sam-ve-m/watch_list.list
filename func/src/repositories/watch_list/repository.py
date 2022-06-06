@@ -29,7 +29,8 @@ class WatchListRepository:
 
         try:
             symbols = collection.find(query)
-            return await symbols.to_list(None)
+            symbols_list = await symbols.to_list(None)
+            return symbols_list
 
         except Exception as ex:
             message = f'UserRepository::insert_one_symbol_in_watch_list::with this query::"user":{query}'

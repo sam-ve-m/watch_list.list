@@ -59,35 +59,6 @@ async def test_list_symbols_when_request_is_ok(
 
 
 @mark.asyncio
-@patch.object(WatchListService, "list_symbols_in_watch_list")
-@patch.object(Heimdall, "decode_payload")
-async def test_list_symbols_when_limit_is_zero(
-    decode_payload_mock, list_symbols_in_watch_list_mock
-):
-    decode_payload_mock.return_value = (
-        decoded_jwt_invalid,
-        HeimdallStatusResponses.SUCCESS,
-    )
-
-    list_symbols_in_watch_list_mock.side_effect = ZeroDivisionError()
-
-    app = Flask(__name__)
-    with app.test_request_context(
-        "?limit=0&offset=12",
-        headers=Headers({"x-thebes-answer": "test"}),
-    ).request as request:
-
-        list_symbols_result = await list_symbols(request)
-
-        assert (
-            list_symbols_result.data
-            == b'{"result": null, "message": "Success", "success": true, "code": 0}'
-        )
-
-        decode_payload_mock.assert_called_with(jwt="test")
-
-
-@mark.asyncio
 @patch.object(Gladsheim, "error")
 @patch.object(WatchListService, "list_symbols_in_watch_list")
 @patch.object(Heimdall, "decode_payload")

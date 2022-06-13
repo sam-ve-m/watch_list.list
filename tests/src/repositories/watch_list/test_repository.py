@@ -39,11 +39,22 @@ get_symbols_in_a_watch_list_return_dummy = {
     "pages": 1,
     "current_page": 0,
 }
+
+blank_watch_list_dummy = {
+    "symbols": [],
+    "pages": 0,
+    "current_page": 0,
+}
+
 watch_list_id_dummy = "user-id"
 
 
 async def count_documents_stub(query):
     return 2
+
+
+async def count_blank_collection_stub(query):
+    return 0
 
 
 @mark.asyncio
@@ -79,20 +90,19 @@ async def test_get_symbols_in_a_watch_list_when_limit_is_zero(get_collection_moc
     find_mock = MagicMock()
     skip_mock = MagicMock()
 
-    cursor_mock.to_list.return_value = to_list_return_dummy
-    collection_mock.count_documents = count_documents_stub
+    cursor_mock.to_list.return_value = []
+    collection_mock.count_documents = count_blank_collection_stub
 
     skip_mock.limit.return_value = cursor_mock
     find_mock.skip.return_value = skip_mock
     collection_mock.find.return_value = find_mock
     get_collection_mock.return_value = collection_mock
 
-    with pytest.raises(ZeroDivisionError):
-        result = await WatchListRepository.get_symbols_in_a_watch_list(
-            watch_list_id_dummy, 0, 0
-        )
-        get_collection_mock.assert_called_once_with()
-        collection_mock.find.assert_not_called()
+    result = await WatchListRepository.get_symbols_in_a_watch_list(
+        watch_list_id_dummy, 0, 0
+    )
+
+    assert result == blank_watch_list_dummy
 
 
 @mark.asyncio

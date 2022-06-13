@@ -38,15 +38,6 @@ async def list_symbols(request: Request = request) -> Response:
         ).build_http_response(status=HTTPStatus.OK)
         return response
 
-    except ZeroDivisionError:
-        response = ResponseModel(
-            result=None,
-            success=True,
-            code=InternalCode.SUCCESS,
-            message="Success",
-        ).build_http_response(status=HTTPStatus.OK)
-        return response
-
     except UnauthorizedError as ex:
         message = "JWT invalid or not supplied"
         Gladsheim.error(error=ex, message=message)

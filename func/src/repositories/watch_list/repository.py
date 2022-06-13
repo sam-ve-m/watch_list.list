@@ -29,8 +29,15 @@ class WatchListRepository:
     async def get_symbols_in_a_watch_list(
         cls, watch_list_id: str, limit: int, offset: int
     ) -> Union[Dict[str, list], Dict[str, int]]:
+
         collection = await cls.__get_collection()
         query = {"unique_id": str(watch_list_id)}
+
+        result = {
+            "symbols": [],
+            "pages": 0,
+            "current_page": 0,
+        }
 
         try:
             number_of_symbols = await collection.count_documents(query)
@@ -43,17 +50,31 @@ class WatchListRepository:
             )
             symbols_list = await symbols.to_list(None)
 
-            result = {
-                "symbols": symbols_list,
-                "pages": number_of_pages,
-                "current_page": current_page,
-            }
+            result["symbols"] = symbols_list
+            result["pages"] = number_of_pages
+            result["current_page"] = current_page
+
             return result
 
         except ZeroDivisionError as ex:
-            raise ex
+            message = f'UserRepository::get_symbols_in_a_watch_list::Warning when get symbols in a watch list'
+            Gladsheim.warning(
+                message=message,
+                watch_list_id=watch_list_id,
+                limit=limit,
+                offset=offset,
+                query=query
+            )
+            return result
 
         except Exception as ex:
-            message = f'UserRepository::insert_one_symbol_in_watch_list::with this query::"user":{query}'
-            Gladsheim.error(error=ex, message=message)
+            message = f'UserRepository::get_symbols_in_a_watch_list::Error when get symbols in a watch list'
+            Gladsheim.error(
+                error=ex,
+                message=message,
+                watch_list_id=watch_list_id,
+                limit=limit,
+                offset=offset,
+                query=query
+            )
             raise ex

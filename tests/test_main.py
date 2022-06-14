@@ -21,6 +21,12 @@ decoded_jwt_invalid = {
     "message": "Jwt decoded",
 }
 
+requests_with_invalid_parameters = [
+    "?limit=&offset=12",
+    "?limit1=&offset=",
+    "?limit=-1&offset=-1",
+]
+
 
 @mark.asyncio
 @patch.object(WatchListService, "list_symbols_in_watch_list")
@@ -29,12 +35,16 @@ async def test_list_symbols_when_request_is_ok(
     decode_payload_mock, list_symbols_in_watch_list_mock
 ):
     decode_payload_mock.return_value = (decoded_jwt_ok, HeimdallStatusResponses.SUCCESS)
-    list_symbols_in_watch_list_mock.return_value = [
-        {"symbol": "symbol", "region": "region"}
-    ]
+    service_result = {
+        "symbols": {"symbol": "symbol", "region": "region"},
+        "pages": 1,
+        "current_page": 1,
+    }
+    list_symbols_in_watch_list_mock.return_value = service_result
 
     app = Flask(__name__)
     with app.test_request_context(
+        "?limit=3&offset=12",
         headers=Headers({"x-thebes-answer": "test"}),
     ).request as request:
 
@@ -42,7 +52,7 @@ async def test_list_symbols_when_request_is_ok(
 
         assert (
             list_symbols_result.data
-            == b'{"result": [{"symbol": "symbol", "region": "region"}], "message": "Success", "success": true, "code": 0}'
+            == b'{"result": {"symbols": {"symbol": "symbol", "region": "region"}, "pages": 1, "current_page": 1}, "message": "Success", "success": true, "code": 0}'
         )
         assert list_symbols_in_watch_list_mock.called
         decode_payload_mock.assert_called_with(jwt="test")
@@ -59,12 +69,16 @@ async def test_list_symbols_when_jwt_is_invalid(
         decoded_jwt_invalid,
         HeimdallStatusResponses.INVALID_TOKEN,
     )
-    list_symbols_in_watch_list_mock.return_value = [
-        {"symbol": "symbol", "region": "region"}
-    ]
+    service_result = {
+        "symbols": {"symbol": "symbol", "region": "region"},
+        "pages": 1,
+        "current_page": 1,
+    }
+    list_symbols_in_watch_list_mock.return_value = service_result
 
     app = Flask(__name__)
     with app.test_request_context(
+        "?limit=3&offset=12",
         headers=Headers({"x-thebes-answer": "test_error"}),
     ).request as request:
 
@@ -80,6 +94,42 @@ async def test_list_symbols_when_jwt_is_invalid(
 
 
 @mark.asyncio
+@mark.parametrize("query_values", requests_with_invalid_parameters)
+@patch.object(Gladsheim, "error")
+@patch.object(WatchListService, "list_symbols_in_watch_list")
+@patch.object(Heimdall, "decode_payload")
+async def test_list_symbols_when_params_are_invalid(
+    decode_payload_mock, list_symbols_in_watch_list_mock, etria_mock, query_values
+):
+    decode_payload_mock.return_value = (
+        decoded_jwt_ok,
+        HeimdallStatusResponses.SUCCESS,
+    )
+    service_result = {
+        "symbols": {"symbol": "symbol", "region": "region"},
+        "pages": 1,
+        "current_page": 1,
+    }
+    list_symbols_in_watch_list_mock.return_value = service_result
+
+    app = Flask(__name__)
+    with app.test_request_context(
+        query_values,
+        headers=Headers({"x-thebes-answer": "test"}),
+    ).request as request:
+
+        list_symbols_result = await list_symbols(request)
+
+        assert (
+            list_symbols_result.data
+            == b'{"result": null, "message": "Invalid parameters", "success": false, "code": 10}'
+        )
+        assert not list_symbols_in_watch_list_mock.called
+        decode_payload_mock.assert_called_with(jwt="test")
+        etria_mock.assert_called()
+
+
+@mark.asyncio
 @patch.object(Gladsheim, "error")
 @patch.object(WatchListService, "list_symbols_in_watch_list")
 @patch.object(Heimdall, "decode_payload")
@@ -91,6 +141,7 @@ async def test_list_symbols_when_generic_exception_happens(
 
     app = Flask(__name__)
     with app.test_request_context(
+        "?limit=3&offset=12",
         headers=Headers({"x-thebes-answer": "test"}),
     ).request as request:
 

@@ -23,7 +23,7 @@ spec:
         - name: ETRIA_LOG_LEVEL
           value: "WARNING"
         - name: MONGO_CONNECTION_URL
-          value: "mongodb://bnd:4FZPY5Yj@172.30.18.223:41000,172.30.19.240:41000,172.30.19.71:41000/?authSource=admin&replicaSet=rslionx&readPreference=secondary"
+          value: "mongodb://jormungandr:MMhsdanNNds32Malmnwqyrte@172.30.18.223:41000,172.30.19.240:41000,172.30.19.71:41000/?authSource=admin&replicaSet=rslionx&readPreference=secondary&ssl=false"
         - name: MONGODB_DATABASE_NAME
           value: "lionx"
         - name: MONGODB_WATCH_LIST_COLLECTION
@@ -45,11 +45,11 @@ spec:
         - name: HEIMDALL_REDIS_PORT
           value: "6379"
         - name: HEIMDALL_REDIS_DB
-          value: "7"
+          value: "1"
         - name: HEIMDALL_REDIS_USER
-          value: "bnd"
+          value: "heimdal"
         - name: HEIMDALL_REDIS_PASSWORD
-          value: "93uOKu5H"
+          value: "FBJAnjkqw21yjewkDSA"
         - name: ASGI_FRAMEWORK
           value: "HYPERCORN"
   version: 2

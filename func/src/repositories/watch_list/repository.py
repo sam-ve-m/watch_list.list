@@ -1,5 +1,5 @@
 from math import ceil, floor
-from typing import Dict, Union
+from typing import Dict, Union, List
 
 from decouple import config
 from etria_logger import Gladsheim
@@ -12,11 +12,11 @@ class WatchListRepository:
     infra = MongoDBInfrastructure
 
     @classmethod
-    async def __get_collection(cls):
+    async def __get_collection(cls, database_name: str, collection_name: str):
         mongo_client = cls.infra.get_client()
         try:
-            database = mongo_client[config("MONGODB_DATABASE_NAME")]
-            collection = database[config("MONGODB_WATCH_LIST_COLLECTION")]
+            database = mongo_client[database_name]
+            collection = database[collection_name]
             return collection
         except Exception as ex:
             message = (
@@ -30,7 +30,12 @@ class WatchListRepository:
         cls, watch_list_id: str, limit: int, offset: int
     ) -> Union[Dict[str, list], Dict[str, int]]:
 
-        collection = await cls.__get_collection()
+        database = config("MONGODB_WATCH_LIST_DATABASE_NAME")
+        collection = config("MONGODB_WATCH_LIST_COLLECTION")
+
+        collection = await cls.__get_collection(
+            database_name=database, collection_name=collection
+        )
         query = {"unique_id": str(watch_list_id)}
 
         result = {
@@ -57,24 +62,46 @@ class WatchListRepository:
             return result
 
         except ZeroDivisionError as ex:
-            message = f'UserRepository::get_symbols_in_a_watch_list::Warning when get symbols in a watch list'
+            message = f"UserRepository::get_symbols_in_a_watch_list::Warning getting symbols in a watch list"
             Gladsheim.warning(
                 message=message,
                 watch_list_id=watch_list_id,
                 limit=limit,
                 offset=offset,
-                query=query
+                query=query,
             )
             return result
 
         except Exception as ex:
-            message = f'UserRepository::get_symbols_in_a_watch_list::Error when get symbols in a watch list'
+            message = f"UserRepository::get_symbols_in_a_watch_list::Error getting symbols in a watch list"
             Gladsheim.error(
                 error=ex,
                 message=message,
                 watch_list_id=watch_list_id,
                 limit=limit,
                 offset=offset,
-                query=query
+                query=query,
             )
+            raise ex
+
+    @classmethod
+    async def get_parent_symbols_by_symbols(cls, symbols: List[str]) -> List[dict]:
+        database = config("MONGODB_PARENT_SYMBOL_DATABASE_NAME")
+        collection = config("MONGODB_PARENT_SYMBOL_COLLECTION")
+
+        collection = await cls.__get_collection(
+            database_name=database, collection_name=collection
+        )
+        query = {"symbol": {"$in": symbols}}
+
+        try:
+            symbols = collection.find(
+                query, projection=["symbol", "parent_symbol", "region"]
+            )
+            symbols_list = await symbols.to_list(None)
+            return symbols_list
+
+        except Exception as ex:
+            message = f"UserRepository::get_parent_symbols_by_symbols::Error getting parent symbols of a watch list"
+            Gladsheim.error(error=ex, message=message, query=query)
             raise ex

@@ -24,10 +24,14 @@ spec:
           value: "WARNING"
         - name: MONGO_CONNECTION_URL
           value: "mongodb://bnd:jkl321pqr@172.30.10.75:41000/?authSource=admin&replicaSet=rslionx&readPreference=secondary"
-        - name: MONGODB_DATABASE_NAME
+        - name: MONGODB_WATCH_LIST_DATABASE_NAME
           value: "lionx"
         - name: MONGODB_WATCH_LIST_COLLECTION
           value: "watch_list"
+        - name: MONGODB_PARENT_SYMBOL_DATABASE_NAME
+          value: "poseidon"
+        - name: MONGODB_PARENT_SYMBOL_COLLECTION
+          value: "basic_information"
         - name: HEIMDALL_FILE_BUCKET_NAME
           value: "heimdall_rsa"
         - name: HEIMDALL_AWS_ACCESS_KEY_ID

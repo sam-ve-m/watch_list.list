@@ -23,8 +23,8 @@ spec:
         - name: ETRIA_LOG_LEVEL
           value: "WARNING"
         - name: MONGO_CONNECTION_URL
-          value: "mongodb://jormungandr:MMhsdanNNds32Malmnwqyrte@172.30.18.223:41000,172.30.19.240:41000,172.30.19.71:41000/?authSource=admin&replicaSet=rslionx&readPreference=secondary&ssl=false"
-        - name: MONGODB_WATCH_LIST_DATABASE_NAME
+          value: "mongodb://jormungandr:FltuklGHVSDAtldyatuidsafvg532@172.30.18.223:41000,172.30.19.240:41000,172.30.19.71:41000/?authSource=admin&replicaSet=rslionx&readPreference=secondary&ssl=false"
+        - name: MONGODB_DATABASE_NAME
           value: "lionx"
         - name: MONGODB_WATCH_LIST_COLLECTION
           value: "watch_list"

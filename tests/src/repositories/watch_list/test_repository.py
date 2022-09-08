@@ -1,10 +1,12 @@
 from unittest.mock import patch, AsyncMock, MagicMock
 
+import decouple
 import pytest
 from etria_logger import Gladsheim
 from pytest import mark
 
-from src.repositories.watch_list.repository import WatchListRepository
+with patch.object(decouple, "config", return_value="CONFIG"):
+    from src.repositories.watch_list.repository import WatchListRepository
 
 to_list_return_dummy = [
     {
@@ -58,8 +60,9 @@ async def count_blank_collection_stub(query):
 
 
 @mark.asyncio
+@patch.object(decouple, "config")
 @patch.object(WatchListRepository, "_WatchListRepository__get_collection")
-async def test_get_symbols_in_a_watch_list(get_collection_mock):
+async def test_get_symbols_in_a_watch_list(get_collection_mock, config_mock):
     collection_mock = MagicMock()
     cursor_mock = AsyncMock()
     find_mock = MagicMock()
@@ -77,7 +80,9 @@ async def test_get_symbols_in_a_watch_list(get_collection_mock):
         watch_list_id_dummy, 5, 0
     )
 
-    get_collection_mock.assert_called_once_with()
+    get_collection_mock.assert_called_once_with(
+        database_name="CONFIG", collection_name="CONFIG"
+    )
     collection_mock.find.assert_called_once_with({"unique_id": watch_list_id_dummy})
     assert result == get_symbols_in_a_watch_list_return_dummy
 
@@ -119,3 +124,54 @@ async def test_get_symbols_in_a_watch_list_exception(get_collection_mock, etria_
         )
         get_collection_mock.assert_called_once_with()
         etria_mock.assert_called()
+
+
+@mark.asyncio
+@patch.object(decouple, "config")
+@patch.object(WatchListRepository, "_WatchListRepository__get_collection")
+async def test_get_symbols_information(get_collection_mock, config_mock):
+    symbols_dummy = ["PETR4", "VALE3", "JBSS3"]
+    collection_mock = MagicMock()
+    cursor_mock = AsyncMock()
+
+    cursor_mock.to_list.return_value = to_list_return_dummy
+
+    collection_mock.find.return_value = cursor_mock
+    get_collection_mock.return_value = collection_mock
+    expected_query = {"symbol": {"$in": symbols_dummy}}
+    expected_fields = ["symbol", "parent_symbol", "quote_type", "region"]
+
+    result = await WatchListRepository.get_symbols_information(symbols=symbols_dummy)
+
+    get_collection_mock.assert_called_once_with(
+        database_name="CONFIG", collection_name="CONFIG"
+    )
+    collection_mock.find.assert_called_once_with(
+        expected_query, projection=expected_fields
+    )
+    assert result == to_list_return_dummy
+
+
+@mark.asyncio
+@patch.object(decouple, "config")
+@patch.object(WatchListRepository, "_WatchListRepository__get_collection")
+async def test_get_symbols_information_exception(get_collection_mock, config_mock):
+    symbols_dummy = ["PETR4", "VALE3", "JBSS3"]
+    collection_mock = MagicMock()
+
+    collection_mock.find.side_effect = Exception()
+    get_collection_mock.return_value = collection_mock
+    expected_query = {"symbol": {"$in": symbols_dummy}}
+    expected_fields = ["symbol", "parent_symbol", "quote_type", "region"]
+
+    with pytest.raises(Exception):
+        result = await WatchListRepository.get_symbols_information(
+            symbols=symbols_dummy
+        )
+
+    get_collection_mock.assert_called_once_with(
+        database_name="CONFIG", collection_name="CONFIG"
+    )
+    collection_mock.find.assert_called_once_with(
+        expected_query, projection=expected_fields
+    )

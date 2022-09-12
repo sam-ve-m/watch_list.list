@@ -1,15 +1,15 @@
+from http import HTTPStatus
+
+from etria_logger import Gladsheim
+from flask import request, Request, Response
+from heimdall_client.bifrost import Heimdall
+from heimdall_client.bifrost import HeimdallStatusResponses
+
 from src.domain.enums.response.code import InternalCode
 from src.domain.exceptions.model import UnauthorizedError
 from src.domain.request.model import WatchListParameters
-from src.services.watch_list import WatchListService
 from src.domain.response.model import ResponseModel
-from heimdall_client.bifrost import Heimdall
-
-from http import HTTPStatus
-
-from flask import request, Request, Response
-from etria_logger import Gladsheim
-from heimdall_client.bifrost import HeimdallStatusResponses
+from src.services.watch_list import WatchListService
 
 
 async def list_symbols(request: Request = request) -> Response:

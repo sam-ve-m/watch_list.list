@@ -1,11 +1,8 @@
-# Jormungandr
-from src.domain.enums.response.code import InternalCode
-
-# Standards
 from json import dumps
 
-# Third party
 from flask import Response
+
+from src.domain.enums.response.code import InternalCode
 
 
 class ResponseModel:

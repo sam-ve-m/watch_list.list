@@ -13,7 +13,7 @@ class WatchListService:
         symbols = await WatchListRepository.get_symbols_in_a_watch_list(
             unique_id, limit, offset
         )
-        symbols_result = await cls.list_parent_symbols_in_watch_list(
+        symbols_result = await cls.list_symbols_with_informations(
             symbols=symbols["symbols"]
         )
 
@@ -26,10 +26,10 @@ class WatchListService:
         return complete_result
 
     @classmethod
-    async def list_parent_symbols_in_watch_list(cls, symbols: list):
+    async def list_symbols_with_informations(cls, symbols: list):
         symbols = [item["symbol"] for item in symbols]
         symbols_general_informations = (
-            await WatchListRepository.get_parent_symbols_by_symbols(symbols)
+            await WatchListRepository.get_symbols_information(symbols)
         )
 
         symbols_result = []
@@ -39,6 +39,7 @@ class WatchListService:
                     "symbol": symbol_general_informations["symbol"],
                     "parent_symbol": symbol_general_informations["parent_symbol"],
                     "region": symbol_general_informations["region"],
+                    "quote_type": symbol_general_informations["quote_type"],
                 }
             )
 

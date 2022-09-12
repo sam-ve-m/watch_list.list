@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+import decouple
 from etria_logger import Gladsheim
 from flask import Flask
 from heimdall_client import HeimdallStatusResponses
@@ -7,8 +8,9 @@ from heimdall_client.bifrost import Heimdall
 from pytest import mark
 from werkzeug.test import Headers
 
-from main import list_symbols
-from src.services.watch_list import WatchListService
+with patch.object(decouple, "config", return_value="CONFIG"):
+    from main import list_symbols
+    from src.services.watch_list import WatchListService
 
 decoded_jwt_ok = {
     "is_payload_decoded": True,

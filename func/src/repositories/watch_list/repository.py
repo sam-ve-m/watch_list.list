@@ -1,4 +1,4 @@
-from math import ceil, floor
+from math import ceil
 from typing import Dict, Union, List
 
 from decouple import config
@@ -85,7 +85,7 @@ class WatchListRepository:
             raise ex
 
     @classmethod
-    async def get_parent_symbols_by_symbols(cls, symbols: List[str]) -> List[dict]:
+    async def get_symbols_information(cls, symbols: List[str]) -> List[dict]:
         database = config("MONGODB_PARENT_SYMBOL_DATABASE_NAME")
         collection = config("MONGODB_PARENT_SYMBOL_COLLECTION")
 
@@ -96,12 +96,12 @@ class WatchListRepository:
 
         try:
             symbols = collection.find(
-                query, projection=["symbol", "parent_symbol", "region"]
+                query, projection=["symbol", "parent_symbol", "quote_type", "region"]
             )
             symbols_list = await symbols.to_list(None)
             return symbols_list
 
         except Exception as ex:
-            message = f"UserRepository::get_parent_symbols_by_symbols::Error getting parent symbols of a watch list"
+            message = f"UserRepository::get_symbols_information::Error getting parent symbols of a watch list"
             Gladsheim.error(error=ex, message=message, query=query)
             raise ex

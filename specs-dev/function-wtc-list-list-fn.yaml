@@ -1,35 +1,35 @@
 include:
-- ./func/*
+- fission.py
 kind: ArchiveUploadSpec
-name: func-vnoK
+name: fission-py-2lsj
 
 ---
 apiVersion: fission.io/v1
 kind: Package
 metadata:
   creationTimestamp: null
-  name: watch-list-list-fn-906c4723-816d-4c59-bd4b-f9c927fd9d4d
+  name: wtc-list-list-fn-c70aff62-9510-40aa-bcef-33eae84ecb56
   namespace: default
 spec:
   deployment:
     checksum: {}
+    type: url
+    url: archive://fission-py-2lsj
   environment:
-    name: watch-list-list-env
+    name: wtc-list-list-env
     namespace: default
   source:
     checksum: {}
-    type: url
-    url: archive://func-vnoK
 status:
-  buildstatus: pending
-  lastUpdateTimestamp: "2022-05-31T18:46:54Z"
+  buildstatus: none
+  lastUpdateTimestamp: "2023-01-09T18:07:31Z"
 
 ---
 apiVersion: fission.io/v1
 kind: Function
 metadata:
   creationTimestamp: null
-  name: watch-list-list-fn
+  name: wtc-list-list-fn
   namespace: default
 spec:
   InvokeStrategy:
@@ -38,18 +38,24 @@ spec:
       MaxScale: 3
       MinScale: 1
       SpecializationTimeout: 120
-      TargetCPUPercent: 80
+      TargetCPUPercent: 0
+      hpaMetrics:
+      - resource:
+          name: cpu
+          target:
+            averageUtilization: 80
+            type: Utilization
+        type: Resource
     StrategyType: execution
   concurrency: 500
   environment:
-    name: watch-list-list-env
+    name: wtc-list-list-env
     namespace: default
   functionTimeout: 60
   idletimeout: 120
   package:
-    functionName: main.list_symbols
     packageref:
-      name: watch-list-list-fn-906c4723-816d-4c59-bd4b-f9c927fd9d4d
+      name: wtc-list-list-fn-c70aff62-9510-40aa-bcef-33eae84ecb56
       namespace: default
-  requestsPerPod: 100000
+  requestsPerPod: 10000
   resources: {}

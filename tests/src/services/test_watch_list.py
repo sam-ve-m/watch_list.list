@@ -4,9 +4,9 @@ import decouple
 from pytest import mark
 
 with patch.object(decouple, "config", return_value="CONFIG"):
-    from src.domain.request.model import WatchListParameters
-    from src.repositories.watch_list.repository import WatchListRepository
-    from src.services.watch_list import WatchListService
+    from func.src.domain.request.model import WatchListParameters
+    from func.src.repositories.watch_list.repository import WatchListRepository
+    from func.src.services.watch_list import WatchListService
 
 get_symbols_in_a_watch_list_dummy = {
     "symbols": [

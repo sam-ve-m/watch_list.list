@@ -5,11 +5,11 @@ from flask import request, Request, Response
 from heimdall_client.bifrost import Heimdall
 from heimdall_client.bifrost import HeimdallStatusResponses
 
-from src.domain.enums.response.code import InternalCode
-from src.domain.exceptions.model import UnauthorizedError
-from src.domain.request.model import WatchListParameters
-from src.domain.response.model import ResponseModel
-from src.services.watch_list import WatchListService
+from func.src.domain.enums.response.code import InternalCode
+from func.src.domain.exceptions.model import UnauthorizedError
+from func.src.domain.request.model import WatchListParameters
+from func.src.domain.response.model import ResponseModel
+from func.src.services.watch_list import WatchListService
 
 
 async def list_symbols(request: Request = request) -> Response:
@@ -23,6 +23,7 @@ async def list_symbols(request: Request = request) -> Response:
         parameters = WatchListParameters(**parameters_dict)
 
         if heimdall_status != HeimdallStatusResponses.SUCCESS:
+            Gladsheim.error(status=heimdall_status)
             raise UnauthorizedError()
 
         unique_id = jwt_content["decoded_jwt"]["user"]["unique_id"]

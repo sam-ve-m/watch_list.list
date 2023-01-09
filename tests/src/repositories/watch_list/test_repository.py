@@ -6,7 +6,7 @@ from etria_logger import Gladsheim
 from pytest import mark
 
 with patch.object(decouple, "config", return_value="CONFIG"):
-    from src.repositories.watch_list.repository import WatchListRepository
+    from func.src.repositories.watch_list.repository import WatchListRepository
 
 to_list_return_dummy = [
     {

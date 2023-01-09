@@ -1,5 +1,5 @@
-from src.domain.request.model import WatchListParameters
-from src.repositories.watch_list.repository import WatchListRepository
+from func.src.domain.request.model import WatchListParameters
+from func.src.repositories.watch_list.repository import WatchListRepository
 
 
 class WatchListService:

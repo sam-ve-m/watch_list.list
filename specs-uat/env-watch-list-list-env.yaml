@@ -47,4 +47,8 @@ spec:
           value: "redis://jormungandr:Mdn45oodsanPOhbrewbDS@172.30.19.183:6379?db=1"
         - name: ASGI_FRAMEWORK
           value: "HYPERCORN"
+        - name: MONGODB_FIXED_INCOME_OFFERS_DATABASE_NAME
+          value: "poseidon"
+        - name: MONGODB_FIXED_INCOME_OFFERS_COLLECTION
+          value: "fixed_income_offers"
   version: 3

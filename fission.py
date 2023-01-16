@@ -1,4 +1,4 @@
-from func.main import list_symbols
+from func.main import list_assets
 import asyncio
 
 import uvloop
@@ -27,7 +27,7 @@ async def healthz():
 
 @app.route('/', methods=['GET', 'POST', 'PUT', 'HEAD', 'OPTIONS', 'DELETE'])
 async def f():
-    return await list_symbols()
+    return await list_assets()
 
 
 asgi_app = WsgiToAsgi(app)

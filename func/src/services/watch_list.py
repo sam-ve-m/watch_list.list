@@ -67,7 +67,6 @@ class WatchListService:
         } for symbol_general_information in assets_general_information]
         return assets_result
 
-
     @staticmethod
     async def _list_fixed_income_products_with_information(assets: list) -> list:
         if not assets:

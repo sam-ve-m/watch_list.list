@@ -3,6 +3,7 @@ from unittest.mock import patch
 import decouple
 from pytest import mark
 
+from func.src.repositories.fixed_income_offers.repository import FixedIncomeRepository
 from func.src.repositories.general_information.repository import GeneralInformationRepository
 
 with patch.object(decouple, "config", return_value="CONFIG"):
@@ -71,3 +72,35 @@ async def test_list_assets_in_watch_list(get_assets_information_mock):
     )
 
     assert result == list_assets_with_informations_return_dummy
+
+
+@mark.asyncio
+@patch.object(GeneralInformationRepository, "get_assets_information")
+async def test_list_variable_income_symbols_with_information(mocked_repository):
+    result = await WatchListService._list_variable_income_symbols_with_information([{"symbol": True}])
+    mocked_repository.assert_called()
+    assert result == []
+
+
+@mark.asyncio
+@patch.object(FixedIncomeRepository, "get_assets_information")
+async def test_list_fixed_income_products_with_information(mocked_repository):
+    result = await WatchListService._list_fixed_income_products_with_information([{"product": True}])
+    mocked_repository.assert_called()
+    assert result == []
+
+
+@mark.asyncio
+@patch.object(GeneralInformationRepository, "get_assets_information")
+async def test_list_variable_income_symbols_with_information_empty(mocked_repository):
+    result = await WatchListService._list_variable_income_symbols_with_information([])
+    mocked_repository.assert_not_called()
+    assert result == []
+
+
+@mark.asyncio
+@patch.object(FixedIncomeRepository, "get_assets_information")
+async def test_list_fixed_income_products_with_information_empty(mocked_repository):
+    result = await WatchListService._list_fixed_income_products_with_information([])
+    mocked_repository.assert_not_called()
+    assert result == []

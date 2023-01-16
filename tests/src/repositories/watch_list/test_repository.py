@@ -41,7 +41,7 @@ watch_list_id_dummy = "user-id"
 
 
 async def count_documents_stub(query):
-    return 2
+    return 6
 
 
 async def count_blank_collection_stub(query):
@@ -66,12 +66,14 @@ async def test_get_assets_in_a_watch_list(get_collection_mock, config_mock):
     get_collection_mock.return_value = collection_mock
 
     result = await WatchListRepository.get_assets_in_a_watch_list(
-        watch_list_id_dummy, 5, 0
+        watch_list_id_dummy, 5, 2
     )
 
+    find_mock.skip.assert_called_once_with(10)
     get_collection_mock.assert_called_once_with()
+    cursor_mock.to_list.assert_called_once_with(None)
     collection_mock.find.assert_called_once_with({"unique_id": watch_list_id_dummy})
-    assert result == (to_list_return_dummy, 1)
+    assert result == (to_list_return_dummy, 2)
 
 
 @mark.asyncio

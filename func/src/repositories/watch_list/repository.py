@@ -1,5 +1,4 @@
-from math import ceil
-from typing import Dict, Union, Tuple
+from typing import Tuple
 
 from decouple import config
 from etria_logger import Gladsheim
@@ -17,32 +16,24 @@ class WatchListRepository(MongoDBRepository):
 
     @classmethod
     async def get_assets_in_a_watch_list(
-        cls, watch_list_id: str, limit: int, offset: int
-    ) -> Tuple[list, int]:
+        cls, watch_list_id: str
+    ) -> list:
         collection = await cls._get_collection()
         query = {"unique_id": str(watch_list_id)}
 
         try:
-            number_of_assets = await collection.count_documents(query)
-            number_of_pages = ceil(number_of_assets / limit)
-            number_of_assets_to_skip = offset * limit
-
-            assets = (
-                collection.find(query).skip(number_of_assets_to_skip).limit(limit)
-            )
+            assets = collection.find(query)
             assets_list = await assets.to_list(None)
-            return assets_list, number_of_pages
+            return assets_list
 
         except ZeroDivisionError as ex:
             message = f"UserRepository::get_assets_in_a_watch_list::Warning getting assets in a watch list"
             Gladsheim.warning(
                 message=message,
                 watch_list_id=watch_list_id,
-                limit=limit,
-                offset=offset,
                 query=query,
             )
-            return [], 0
+            return []
 
         except Exception as ex:
             message = f"UserRepository::get_assets_in_a_watch_list::Error getting assets in a watch list"
@@ -50,8 +41,6 @@ class WatchListRepository(MongoDBRepository):
                 error=ex,
                 message=message,
                 watch_list_id=watch_list_id,
-                limit=limit,
-                offset=offset,
                 query=query,
             )
             raise ex

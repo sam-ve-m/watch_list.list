@@ -60,20 +60,17 @@ async def test_get_assets_in_a_watch_list(get_collection_mock, config_mock):
     cursor_mock.to_list.return_value = to_list_return_dummy
     collection_mock.count_documents = count_documents_stub
 
-    skip_mock.limit.return_value = cursor_mock
-    find_mock.skip.return_value = skip_mock
-    collection_mock.find.return_value = find_mock
+    collection_mock.find.return_value = cursor_mock
     get_collection_mock.return_value = collection_mock
 
     result = await WatchListRepository.get_assets_in_a_watch_list(
-        watch_list_id_dummy, 5, 2
+        watch_list_id_dummy
     )
 
-    find_mock.skip.assert_called_once_with(10)
     get_collection_mock.assert_called_once_with()
     cursor_mock.to_list.assert_called_once_with(None)
     collection_mock.find.assert_called_once_with({"unique_id": watch_list_id_dummy})
-    assert result == (to_list_return_dummy, 2)
+    assert result == to_list_return_dummy
 
 
 @mark.asyncio
@@ -87,16 +84,14 @@ async def test_get_assets_in_a_watch_list_when_limit_is_zero(get_collection_mock
     cursor_mock.to_list.return_value = []
     collection_mock.count_documents = count_blank_collection_stub
 
-    skip_mock.limit.return_value = cursor_mock
-    find_mock.skip.return_value = skip_mock
-    collection_mock.find.return_value = find_mock
+    collection_mock.find.return_value = cursor_mock
     get_collection_mock.return_value = collection_mock
 
     result = await WatchListRepository.get_assets_in_a_watch_list(
-        watch_list_id_dummy, 0, 0
+        watch_list_id_dummy,
     )
 
-    assert result == ([], 0)
+    assert result == []
 
 
 @mark.asyncio

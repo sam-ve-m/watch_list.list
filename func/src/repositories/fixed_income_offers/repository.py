@@ -1,5 +1,4 @@
-from math import ceil
-from typing import Dict, Union, List, Tuple
+from typing import List, Tuple
 
 from decouple import config
 from etria_logger import Gladsheim

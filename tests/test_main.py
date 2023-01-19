@@ -96,42 +96,6 @@ async def test_list_assets_when_jwt_is_invalid(
 
 
 @mark.asyncio
-@mark.parametrize("query_values", requests_with_invalid_parameters)
-@patch.object(Gladsheim, "error")
-@patch.object(WatchListService, "list_assets_in_watch_list")
-@patch.object(Heimdall, "decode_payload")
-async def test_list_assets_when_params_are_invalid(
-    decode_payload_mock, list_assets_in_watch_list_mock, etria_mock, query_values
-):
-    decode_payload_mock.return_value = (
-        decoded_jwt_ok,
-        HeimdallStatusResponses.SUCCESS,
-    )
-    service_result = {
-        "assets": {"symbol": "symbol", "region": "region"},
-        "pages": 1,
-        "current_page": 1,
-    }
-    list_assets_in_watch_list_mock.return_value = service_result
-
-    app = Flask(__name__)
-    with app.test_request_context(
-        query_values,
-        headers=Headers({"x-thebes-answer": "test"}),
-    ).request as request:
-
-        list_assets_result = await list_assets(request)
-
-        assert (
-            list_assets_result.data
-            == b'{"result": null, "message": "Invalid parameters", "success": false, "code": 10}'
-        )
-        assert not list_assets_in_watch_list_mock.called
-        decode_payload_mock.assert_not_called()
-        etria_mock.assert_called()
-
-
-@mark.asyncio
 @patch.object(Gladsheim, "error")
 @patch.object(WatchListService, "list_assets_in_watch_list")
 @patch.object(Heimdall, "decode_payload")

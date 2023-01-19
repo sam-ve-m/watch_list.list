@@ -7,7 +7,6 @@ from func.src.repositories.fixed_income_offers.repository import FixedIncomeRepo
 from func.src.repositories.general_information.repository import GeneralInformationRepository
 
 with patch.object(decouple, "config", return_value="CONFIG"):
-    from func.src.domain.request.model import WatchListParameters
     from func.src.repositories.watch_list.repository import WatchListRepository
     from func.src.services.watch_list import WatchListService
 
@@ -40,7 +39,6 @@ list_assets_with_informations_return_dummy = [
 ]
 
 
-watch_list_parameters_dummy = WatchListParameters(limit=5, offset=0)
 
 
 @mark.asyncio
@@ -55,7 +53,7 @@ async def test_list_assets_in_watch_list(
 ):
     get_assets_in_a_watch_list_mock.return_value = get_assets_in_a_watch_list_dummy
     result = await WatchListService.list_assets_in_watch_list(
-        "user-id", watch_list_parameters_dummy
+        "user-id",
     )
 
     assert result == list_assets_in_a_watch_list_dummy
@@ -71,7 +69,10 @@ async def test_list_assets_in_watch_list(get_assets_information_mock):
         assets=[{"symbol": "PETR4", "asset_type": "variable_income"}]
     )
 
-    assert result == list_assets_with_informations_return_dummy
+    assert result == {
+        'fixed_income': [],
+        'variable_income': [{'region': 'BR', 'symbol': 'PETR4'}]
+    }
 
 
 @mark.asyncio

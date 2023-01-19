@@ -16,7 +16,7 @@ spec:
     container:
       name: ""
       resources: {}
-    image: nexus.sigame.com.br/fission-wacth-list-list:0.1.0-1
+    image: nexus.sigame.com.br/fission-wacth-list-list:0.2.0-2
     podspec:
       containers:
       - name: wtc-list-list-env
@@ -51,4 +51,8 @@ spec:
           value: "redis://jormungandr:oUjqwnmdDSA391dja@172.30.11.235:6379?db=1"
         - name: ASGI_FRAMEWORK
           value: "HYPERCORN"
+        - name: MONGODB_FIXED_INCOME_OFFERS_DATABASE_NAME
+          value: "poseidon"
+        - name: MONGODB_FIXED_INCOME_OFFERS_COLLECTION
+          value: "fixed_income_offers"
   version: 3

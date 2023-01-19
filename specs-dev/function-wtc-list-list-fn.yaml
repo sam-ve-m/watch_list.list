@@ -1,20 +1,20 @@
 include:
 - fission.py
 kind: ArchiveUploadSpec
-name: fission-py-2lsj
+name: fission-py-KeyA
 
 ---
 apiVersion: fission.io/v1
 kind: Package
 metadata:
   creationTimestamp: null
-  name: wtc-list-list-fn-c70aff62-9510-40aa-bcef-33eae84ecb56
+  name: wtc-list-list-fn-1d0df396-1cb6-4978-8807-2980c5ad0ff1
   namespace: default
 spec:
   deployment:
     checksum: {}
     type: url
-    url: archive://fission-py-2lsj
+    url: archive://fission-py-KeyA
   environment:
     name: wtc-list-list-env
     namespace: default
@@ -22,7 +22,7 @@ spec:
     checksum: {}
 status:
   buildstatus: none
-  lastUpdateTimestamp: "2023-01-09T18:07:31Z"
+  lastUpdateTimestamp: "2023-01-16T18:22:17Z"
 
 ---
 apiVersion: fission.io/v1
@@ -55,7 +55,7 @@ spec:
   idletimeout: 120
   package:
     packageref:
-      name: wtc-list-list-fn-c70aff62-9510-40aa-bcef-33eae84ecb56
+      name: wtc-list-list-fn-1d0df396-1cb6-4978-8807-2980c5ad0ff1
       namespace: default
   requestsPerPod: 10000
   resources: {}

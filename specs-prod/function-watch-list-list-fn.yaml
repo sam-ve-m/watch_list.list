@@ -47,7 +47,7 @@ spec:
   functionTimeout: 60
   idletimeout: 120
   package:
-    functionName: main.list_symbols
+    functionName: main.list_assets
     packageref:
       name: watch-list-list-fn-906c4723-816d-4c59-bd4b-f9c927fd9d4d
       namespace: default

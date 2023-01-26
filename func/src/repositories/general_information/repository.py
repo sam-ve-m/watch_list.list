@@ -21,7 +21,7 @@ class GeneralInformationRepository(MongoDBRepository):
 
         try:
             assets = collection.find(
-                query, projection=["symbol", "region"]
+                query, projection=["symbol", "region", "parent_symbol", "quote_type"]
             )
             assets_list = await assets.to_list(None)
             return assets_list

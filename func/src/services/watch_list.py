@@ -51,6 +51,8 @@ class WatchListService:
         assets_result = [{
             "symbol": symbol_general_information["symbol"],
             "region": symbol_general_information["region"],
+            "parent_symbol": symbol_general_information["parent_symbol"],
+            "quote_type": symbol_general_information["quote_type"],
         } for symbol_general_information in assets_general_information]
         return assets_result
 
